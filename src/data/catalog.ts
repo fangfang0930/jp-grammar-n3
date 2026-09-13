@@ -53,10 +53,13 @@ export function getAdjacentCatalog(id: string): {
   }
 }
 
-export function searchCatalog(query: string): CatalogItem[] {
+export function searchCatalog(
+  query: string,
+  items: CatalogItem[] = CATALOG_ITEMS,
+): CatalogItem[] {
   const keyword = query.trim().toLowerCase()
-  if (!keyword) return CATALOG_ITEMS
-  return CATALOG_ITEMS.filter((item) => {
+  if (!keyword) return items
+  return items.filter((item) => {
     const hay = [item.title, item.usage, item.jp, item.cn].join(" ").toLowerCase()
     return hay.includes(keyword)
   })

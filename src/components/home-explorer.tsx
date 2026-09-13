@@ -46,7 +46,7 @@ export function HomeExplorer({
   const readyPassages = passages.filter((item) => item.status === "ready")
   const blocked = passages.filter((item) => item.status !== "ready")
 
-  const filteredCatalog = useMemo(() => searchCatalog(query), [query])
+  const filteredCatalog = useMemo(() => searchCatalog(query, catalog), [query, catalog])
   const filteredPassages = useMemo(
     () => searchPassages(readyPassages, query),
     [query, readyPassages],
@@ -89,9 +89,10 @@ export function HomeExplorer({
       <Input
         type="search"
         value={query}
-        onChange={(event) => setQuery(event.target.value)}
+        onValueChange={setQuery}
         placeholder="搜索语法 / 中文 / 日文例句…"
         className="h-11 rounded-xl bg-card px-4 text-base"
+        aria-label="搜索语法或篇章"
       />
 
       {emptySearch ? (
