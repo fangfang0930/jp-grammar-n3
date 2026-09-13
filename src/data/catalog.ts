@@ -33,11 +33,12 @@ type CatalogFile = {
 const file = catalogJson as CatalogFile
 
 export const CATALOG_TITLE = file.title
-export const CATALOG_ITEMS: CatalogItem[] = file.items
+export const CATALOG_ALL: CatalogItem[] = file.items
+export const CATALOG_ITEMS: CatalogItem[] = file.items.filter((item) => item.kind === "pattern")
 export const TARGET_PATTERN_COUNT = 123
 
 export function getCatalogItem(id: string): CatalogItem | undefined {
-  return CATALOG_ITEMS.find((item) => item.id === id)
+  return CATALOG_ALL.find((item) => item.id === id)
 }
 
 export function getAdjacentCatalog(id: string): {
