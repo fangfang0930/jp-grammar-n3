@@ -2,10 +2,9 @@
 
 import { useCallback, useEffect, useRef, useState } from "react"
 import {
-  detectLang,
   pickChineseVoice,
   pickJapaneseVoice,
-  splitByLang,
+  segmentsForSpeech,
   voiceConfig,
   type SpeechLang,
   type SpeechSegment,
@@ -17,8 +16,16 @@ export function useSpeech() {
   const jaVoice = useRef<SpeechSynthesisVoice | undefined>(undefined)
   const zhVoice = useRef<SpeechSynthesisVoice | undefined>(undefined)
   const speakingRef = useRef(false)
+  const keepAliveRef = useRef<number | null>(null)
   const supported =
     typeof window !== "undefined" && "speechSynthesis" in window
+
+  const clearKeepAlive = useCallback(() => {
+    if (keepAliveRef.current != null) {
+      window.clearInterval(keepAliveRef.current)
+      keepAliveRef.current = null
+    }
+  }, [])
 
   useEffect(() => {
     if (typeof window === "undefined" || !("speechSynthesis" in window)) {
@@ -33,17 +40,19 @@ export function useSpeech() {
     window.speechSynthesis.addEventListener("voiceschanged", pick)
     return () => {
       window.speechSynthesis.removeEventListener("voiceschanged", pick)
+      clearKeepAlive()
       window.speechSynthesis.cancel()
     }
-  }, [])
+  }, [clearKeepAlive])
 
   const stop = useCallback(() => {
     speakingRef.current = false
     setIsSpeaking(false)
+    clearKeepAlive()
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       window.speechSynthesis.cancel()
     }
-  }, [])
+  }, [clearKeepAlive])
 
   const speakSegments = useCallback(
     (segments: SpeechSegment[]) => {
@@ -52,13 +61,23 @@ export function useSpeech() {
         return
       }
       window.speechSynthesis.cancel()
+      clearKeepAlive()
       speakingRef.current = true
       setIsSpeaking(true)
+
+      // Chrome can silently pause long Japanese speech; resume without a hard restart.
+      keepAliveRef.current = window.setInterval(() => {
+        if (!speakingRef.current) return
+        if (window.speechSynthesis.speaking && window.speechSynthesis.paused) {
+          window.speechSynthesis.resume()
+        }
+      }, 5000)
 
       const speakNext = (index: number) => {
         if (!speakingRef.current || index >= segments.length) {
           speakingRef.current = false
           setIsSpeaking(false)
+          clearKeepAlive()
           return
         }
         const segment = segments[index]
@@ -70,25 +89,29 @@ export function useSpeech() {
         const utter = new SpeechSynthesisUtterance(segment.text)
         utter.lang = cfg.langCode
         utter.rate = cfg.rate
+        utter.pitch = cfg.pitch
         const voice = segment.lang === "ja" ? jaVoice.current : zhVoice.current
-        if (voice) utter.voice = voice
+        if (voice) {
+          utter.voice = voice
+          utter.lang = voice.lang || cfg.langCode
+        }
         utter.onend = () => speakNext(index + 1)
         utter.onerror = () => speakNext(index + 1)
         window.speechSynthesis.speak(utter)
       }
       speakNext(0)
     },
-    [supported],
+    [clearKeepAlive, supported],
   )
 
   const speakAuto = useCallback(
-    (text: string) => speakSegments(splitByLang(text)),
+    (text: string) => speakSegments(segmentsForSpeech(text)),
     [speakSegments],
   )
 
   const speakLang = useCallback(
     (text: string, lang?: SpeechLang) => {
-      speakSegments([{ lang: lang ?? detectLang(text), text }])
+      speakSegments(segmentsForSpeech(text, lang))
     },
     [speakSegments],
   )
