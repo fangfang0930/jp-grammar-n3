@@ -5,7 +5,14 @@ import { ingestPdfs } from "@/lib/pdf/ingest"
 
 export const dynamic = "force-dynamic"
 
-export default async function HomePage() {
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string | string[] }>
+}) {
+  const params = await searchParams
+  const raw = params.q
+  const initialQuery = Array.isArray(raw) ? (raw[0] ?? "") : (raw ?? "")
   const report = await ingestPdfs()
 
   return (
@@ -17,6 +24,7 @@ export default async function HomePage() {
         pdfDir={report.pdfDir}
         pdfFiles={report.files}
         ingestErrors={report.errors}
+        initialQuery={initialQuery}
       />
     </>
   )

@@ -33,14 +33,16 @@ export function HomeExplorer({
   pdfDir,
   pdfFiles,
   ingestErrors,
+  initialQuery = "",
 }: {
   catalog: CatalogItem[]
   passages: ReadingPassage[]
   pdfDir: string
   pdfFiles: string[]
   ingestErrors: { fileName: string; message: string }[]
+  initialQuery?: string
 }) {
-  const [query, setQuery] = useState("")
+  const [query, setQuery] = useState(initialQuery)
   const { ids, ready } = useProgress()
   const readyPassages = passages.filter((item) => item.status === "ready")
   const blocked = passages.filter((item) => item.status !== "ready")
@@ -85,22 +87,29 @@ export function HomeExplorer({
         </div>
       </section>
 
-      <div className="space-y-2">
-        <input
-          type="search"
-          value={query}
-          onChange={(event) => setQuery(event.currentTarget.value)}
-          placeholder="搜索语法 / 中文 / 日文例句…"
-          aria-label="搜索语法或篇章"
-          className="h-11 w-full rounded-xl border border-input bg-card px-4 text-base outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
-        />
+      <form action="/" method="get" className="space-y-2" role="search">
+        <div className="flex gap-2">
+          <input
+            type="search"
+            name="q"
+            value={query}
+            onChange={(event) => setQuery(event.currentTarget.value)}
+            onInput={(event) => setQuery(event.currentTarget.value)}
+            placeholder="搜索语法 / 中文 / 日文例句…"
+            aria-label="搜索语法或篇章"
+            className="h-11 min-w-0 flex-1 rounded-xl border border-input bg-card px-4 text-base outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+          />
+          <button type="submit" className={buttonVariants({ size: "lg" })}>
+            搜索
+          </button>
+        </div>
         {query.trim() ? (
           <p className="text-xs text-muted-foreground" data-testid="search-status">
             找到 {filteredCatalog.length} 条句型
             {filteredPassages.length ? ` · ${filteredPassages.length} 篇阅读` : ""}
           </p>
         ) : null}
-      </div>
+      </form>
 
       {emptySearch ? (
         <div className="flex flex-col items-center gap-2 py-16 text-center text-muted-foreground">
@@ -172,8 +181,8 @@ export function HomeExplorer({
         <section className="space-y-3">
           <div className="flex items-end justify-between gap-3">
             <div>
-              <h2 className="text-base font-semibold">N3 句型 {TARGET_PATTERN_COUNT} 条</h2>
-              <p className="text-xs text-muted-foreground">极速版语条 · 点开后先读日文例句</p>
+              <h2 className="text-base font-semibold">N3 句型</h2>
+              <p className="text-xs text-muted-foreground">极速版语条 {TARGET_PATTERN_COUNT} 条 · 点开后先读日文例句</p>
             </div>
             <Badge variant="secondary">{filteredCatalog.length} 条</Badge>
           </div>
