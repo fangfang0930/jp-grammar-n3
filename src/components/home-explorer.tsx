@@ -6,7 +6,6 @@ import { BookOpenText, FileText, SearchX } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { buttonVariants } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
 import { Progress } from "@/components/ui/progress"
 import type { CatalogItem, ReadingPassage } from "@/data/catalog"
 import { searchCatalog, searchPassages, TARGET_PATTERN_COUNT } from "@/data/catalog"
@@ -86,14 +85,22 @@ export function HomeExplorer({
         </div>
       </section>
 
-      <Input
-        type="search"
-        value={query}
-        onValueChange={setQuery}
-        placeholder="搜索语法 / 中文 / 日文例句…"
-        className="h-11 rounded-xl bg-card px-4 text-base"
-        aria-label="搜索语法或篇章"
-      />
+      <div className="space-y-2">
+        <input
+          type="search"
+          value={query}
+          onChange={(event) => setQuery(event.currentTarget.value)}
+          placeholder="搜索语法 / 中文 / 日文例句…"
+          aria-label="搜索语法或篇章"
+          className="h-11 w-full rounded-xl border border-input bg-card px-4 text-base outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+        />
+        {query.trim() ? (
+          <p className="text-xs text-muted-foreground" data-testid="search-status">
+            找到 {filteredCatalog.length} 条句型
+            {filteredPassages.length ? ` · ${filteredPassages.length} 篇阅读` : ""}
+          </p>
+        ) : null}
+      </div>
 
       {emptySearch ? (
         <div className="flex flex-col items-center gap-2 py-16 text-center text-muted-foreground">
