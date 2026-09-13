@@ -1,0 +1,24 @@
+# OS
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
+
+# Log
+*.log
+npm-debug.log*
+
+# Node (if later installed)
+node_modules/
+
+# Local
+.env
+.env.local

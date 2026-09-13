@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="日语语法">
+    <meta name="theme-color" content="#ffffff">
+    <title>N3句型语法 - 日语阅读</title>
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23E63946'/><text x='50' y='68' font-size='50' text-anchor='middle' fill='white' font-family='sans-serif'>日</text></svg>">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <header class="app-header">
+            <h1 id="page-title">N3句型语法 123条</h1>
+            <button id="back-btn" class="back-btn" hidden>← 返回</button>
+        </header>
+
+        <div class="search-bar">
+            <input type="search" id="search-input" placeholder="搜索语法 / 中文含义...">
+        </div>
+
+        <main id="main-content">
+            <section id="list-view" class="view">
+                <ul id="grammar-list" class="grammar-list"></ul>
+                <div id="empty-hint" class="empty-hint" hidden>没有找到匹配的语法项</div>
+            </section>
+
+            <section id="detail-view" class="view" hidden>
+                <div class="detail-card">
+                    <div class="detail-header">
+                        <h2 id="detail-title"></h2>
+                        <button id="speak-title-btn" class="speak-btn" title="朗读">🔊</button>
+                    </div>
+
+                    <div class="detail-section">
+                        <div class="section-label">接续</div>
+                        <div class="section-content">
+                            <p id="detail-connection"></p>
+                            <button class="speak-inline-btn" data-target="detail-connection">🔊</button>
+                        </div>
+                    </div>
+
+                    <div class="detail-section">
+                        <div class="section-label">意思</div>
+                        <div class="section-content">
+                            <p id="detail-meaning"></p>
+                        </div>
+                    </div>
+
+                    <div class="detail-section">
+                        <div class="section-label">例句</div>
+                        <div id="detail-examples" class="examples-list"></div>
+                    </div>
+
+                    <div class="detail-section">
+                        <div class="section-label">说明</div>
+                        <div class="section-content">
+                            <p id="detail-note"></p>
+                            <button class="speak-inline-btn" data-target="detail-note">🔊</button>
+                        </div>
+                    </div>
+
+                    <div class="action-bar">
+                        <button id="speak-all-btn" class="primary-btn">🔊 全文朗读</button>
+                        <button id="stop-btn" class="secondary-btn" hidden>■ 停止</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="app-footer">
+            <span id="count-info">共 0 条</span>
+        </footer>
+    </div>
+
+    <div id="toast" class="toast" hidden></div>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch(() => {});
+            });
+        }
+    </script>
+</body>
+</html>
