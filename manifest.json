@@ -1,7 +1,7 @@
 {
-    "name": "N3句型语法 日语阅读",
-    "short_name": "日语语法",
-    "description": "N3句型语法123条 带日语语音朗读功能",
+    "name": "日语 PDF 阅读器",
+    "short_name": "日语阅读",
+    "description": "N3句型语法123条 · 日文在上、中文可隐藏、支持朗读",
     "lang": "zh-CN",
     "start_url": "./index.html",
     "scope": "./",

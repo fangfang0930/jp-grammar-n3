@@ -5,26 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="日语语法">
+    <meta name="apple-mobile-web-app-title" content="日语阅读">
     <meta name="theme-color" content="#ffffff">
-    <title>N3句型语法 - 日语阅读</title>
+    <title>日语 PDF 阅读器 · N3句型</title>
     <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23E63946'/><text x='50' y='68' font-size='50' text-anchor='middle' fill='white' font-family='sans-serif'>日</text></svg>">
-    <link rel="manifest" href="manifest.json?v=3">
-    <link rel="stylesheet" href="style.css?v=3">
+    <link rel="manifest" href="manifest.json?v=4">
+    <link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
     <div id="app">
         <header class="app-header">
-            <h1 id="page-title">N3句型语法 123条</h1>
-            <button id="back-btn" class="back-btn" hidden>← 返回</button>
+            <h1 id="page-title">日语 PDF 阅读</h1>
+            <button id="back-btn" class="back-btn" type="button" hidden>← 返回</button>
         </header>
 
-        <div class="search-bar">
-            <input type="search" id="search-input" placeholder="搜索语法 / 中文含义...">
+        <div id="list-toolbar" class="search-bar">
+            <input type="search" id="search-input" placeholder="搜索语法 / 日文 / 中文…" autocomplete="off">
+            <div class="toolbar-row">
+                <button id="toggle-cn-global" class="chip-btn" type="button" aria-pressed="false">显示中文</button>
+                <span id="progress-info" class="progress-info">已读 0 / 0</span>
+            </div>
         </div>
 
         <main id="main-content">
             <section id="list-view" class="view">
+                <p class="intro-text">出自《N3句型语法123条》。日文在上，中文默认隐藏，可随时朗读。</p>
                 <ul id="grammar-list" class="grammar-list"></ul>
                 <div id="empty-hint" class="empty-hint" hidden>没有找到匹配的语法项</div>
             </section>
@@ -32,42 +37,41 @@
             <section id="detail-view" class="view" hidden>
                 <div class="detail-card">
                     <div class="detail-header">
-                        <h2 id="detail-title"></h2>
-                        <button id="speak-title-btn" class="speak-btn" title="朗读">🔊</button>
-                    </div>
-
-                    <div class="detail-section">
-                        <div class="section-label">接续</div>
-                        <div class="section-content">
-                            <p id="detail-connection"></p>
-                            <button class="speak-inline-btn" data-target="detail-connection">🔊</button>
+                        <div class="detail-header-text">
+                            <p id="detail-meta" class="detail-meta"></p>
+                            <h2 id="detail-title"></h2>
                         </div>
+                        <button id="speak-title-btn" class="speak-btn" type="button" title="朗读句型">🔊</button>
                     </div>
 
                     <div class="detail-section">
                         <div class="section-label">意思</div>
-                        <div class="section-content">
-                            <p id="detail-meaning"></p>
-                        </div>
+                        <p id="detail-meaning" class="section-body"></p>
                     </div>
 
                     <div class="detail-section">
-                        <div class="section-label">例句</div>
+                        <div class="section-label-row">
+                            <div class="section-label">例文阅读</div>
+                            <button id="toggle-cn-detail" class="chip-btn chip-btn-sm" type="button" aria-pressed="false">显示中文</button>
+                        </div>
                         <div id="detail-examples" class="examples-list"></div>
                     </div>
 
-                    <div class="detail-section">
+                    <div class="detail-section" id="note-section">
                         <div class="section-label">说明</div>
-                        <div class="section-content">
-                            <p id="detail-note"></p>
-                            <button class="speak-inline-btn" data-target="detail-note">🔊</button>
-                        </div>
+                        <p id="detail-note" class="section-body muted"></p>
                     </div>
 
                     <div class="action-bar">
-                        <button id="speak-all-btn" class="primary-btn">🔊 全文朗读</button>
-                        <button id="stop-btn" class="secondary-btn" hidden>■ 停止</button>
+                        <button id="speak-all-btn" class="primary-btn" type="button">🔊 朗读日文</button>
+                        <button id="stop-btn" class="secondary-btn" type="button" hidden>■ 停止</button>
+                        <button id="mark-read-btn" class="secondary-btn" type="button">标为已读</button>
                     </div>
+                </div>
+
+                <div class="nav-bar">
+                    <button id="prev-btn" class="nav-btn" type="button" hidden>← 上一条</button>
+                    <button id="next-btn" class="nav-btn" type="button" hidden>下一条 →</button>
                 </div>
             </section>
         </main>
@@ -79,12 +83,12 @@
 
     <div id="toast" class="toast" hidden></div>
 
-    <script src="data.js?v=3"></script>
-    <script src="app.js?v=3"></script>
+    <script src="data.js?v=4"></script>
+    <script src="app.js?v=4"></script>
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js?v=3').catch(() => {});
+                navigator.serviceWorker.register('sw.js?v=4').catch(() => {});
             });
         }
     </script>
