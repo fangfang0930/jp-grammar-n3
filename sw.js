@@ -1,4 +1,4 @@
-const CACHE_NAME = 'jp-grammar-v1';
+const CACHE_NAME = 'jp-pdf-reader-v4';
 const ASSETS = [
     './',
     './index.html',
