@@ -36,7 +36,9 @@ export function detectLang(text: string): SpeechLang {
   if (jaCount === 0 && zhCount === 0) {
     return /[A-Za-z]/.test(cleaned) ? "en" : "zh"
   }
-  return jaCount >= zhCount ? "ja" : "zh"
+  // Kana is decisive: shared kanji should stay Japanese when any kana is present.
+  if (jaCount > 0) return "ja"
+  return "zh"
 }
 
 export function splitByLang(text: string): SpeechSegment[] {
@@ -93,11 +95,81 @@ function mergeShortTokens(tokens: SpeechSegment[]): SpeechSegment[] {
   return merged.filter((token) => token.text.trim())
 }
 
+/** Soften characters that browser TTS often misreads or pauses awkwardly on. */
+export function prepareJapaneseText(text: string): string {
+  return text
+    .replace(/\u3000/g, " ")
+    .replace(/[～〜]/g, "ー")
+    .replace(/…+/g, "。")
+    .replace(/・/g, "、")
+    .replace(/[「」『』【】〔〕]/g, " ")
+    .replace(/[（(]/g, "、")
+    .replace(/[）)]/g, "。")
+    .replace(/[/／]/g, "、")
+    .replace(/\s*\n+\s*/g, "。")
+    .replace(/\s{2,}/g, " ")
+    .replace(/([。！？])\1+/g, "$1")
+    .replace(/\s+([。、！？])/g, "$1")
+    .trim()
+}
+
+/**
+ * Split long Japanese into sentence-sized chunks so Chrome does not cut off
+ * mid-utterance, while keeping chunks large enough to sound continuous.
+ */
+export function chunkJapaneseSpeech(text: string, maxLen = 90): string[] {
+  const prepared = prepareJapaneseText(text)
+  if (!prepared) return []
+
+  const sentences = prepared
+    .split(/(?<=[。！？!?])/)
+    .map((part) => part.trim())
+    .filter(Boolean)
+
+  const chunks: string[] = []
+  let buffer = ""
+
+  const flush = () => {
+    if (buffer.trim()) chunks.push(buffer.trim())
+    buffer = ""
+  }
+
+  for (const sentence of sentences.length ? sentences : [prepared]) {
+    if (!buffer) {
+      buffer = sentence
+    } else if (buffer.length + sentence.length <= maxLen) {
+      buffer += sentence
+    } else {
+      flush()
+      buffer = sentence
+    }
+
+    if (buffer.length >= maxLen) flush()
+  }
+  flush()
+
+  return chunks.length ? chunks : [prepared]
+}
+
+function scoreJapaneseVoice(voice: SpeechSynthesisVoice): number {
+  const label = `${voice.name} ${voice.lang}`
+  let score = 0
+  if (/ja(-JP)?/i.test(voice.lang)) score += 20
+  if (/natural|neural|online|enhanced|premium|google/i.test(label)) score += 40
+  if (/Nanami|Kyoko|Otoya|Haruka|Ichiro|Sayaka|Google 日本語|Microsoft Nanami/i.test(label)) {
+    score += 30
+  }
+  if (/local/i.test(label) && !/natural|neural|online/i.test(label)) score -= 5
+  if (voice.localService === false) score += 8
+  return score
+}
+
 export function pickJapaneseVoice(voices: SpeechSynthesisVoice[]) {
   const ja = voices.filter(
     (voice) => /ja|JP|日本語/i.test(voice.lang) || /japan/i.test(voice.name),
   )
-  return ja.find((voice) => /Kyoko|Otoya|Nanami/i.test(voice.name)) ?? ja[0]
+  if (ja.length === 0) return undefined
+  return [...ja].sort((a, b) => scoreJapaneseVoice(b) - scoreJapaneseVoice(a))[0]
 }
 
 export function pickChineseVoice(voices: SpeechSynthesisVoice[]) {
@@ -107,13 +179,34 @@ export function pickChineseVoice(voices: SpeechSynthesisVoice[]) {
     ),
   )
   return (
-    zh.find((voice) => /Tingting|Sinji|Meijia|Xiaoxiao|Yaoyao/i.test(voice.name)) ??
+    zh.find((voice) => /Tingting|Sinji|Meijia|Xiaoxiao|Yaoyao|Natural|Neural/i.test(voice.name)) ??
     zh[0]
   )
 }
 
 export function voiceConfig(lang: SpeechLang) {
-  if (lang === "ja") return { langCode: "ja-JP", rate: 0.95 }
-  if (lang === "en") return { langCode: "en-US", rate: 1 }
-  return { langCode: "zh-CN", rate: 1 }
+  // Slightly under 1.0 keeps Japanese mora timing clearer without sounding slow.
+  if (lang === "ja") return { langCode: "ja-JP", rate: 0.92, pitch: 1.02 }
+  if (lang === "en") return { langCode: "en-US", rate: 1, pitch: 1 }
+  return { langCode: "zh-CN", rate: 1, pitch: 1 }
+}
+
+export function segmentsForSpeech(
+  text: string,
+  lang?: SpeechLang,
+): SpeechSegment[] {
+  const resolved = lang ?? detectLang(text)
+  if (resolved === "ja") {
+    return chunkJapaneseSpeech(text).map((chunk) => ({ lang: "ja" as const, text: chunk }))
+  }
+  if (lang) {
+    return [{ lang: resolved, text }]
+  }
+  return splitByLang(text).flatMap((segment) => {
+    if (segment.lang !== "ja") return [segment]
+    return chunkJapaneseSpeech(segment.text).map((chunk) => ({
+      lang: "ja" as const,
+      text: chunk,
+    }))
+  })
 }
