@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation"
+import { BottomNav } from "@/components/bottom-nav"
 import { PassageReader } from "@/components/passage-reader"
 import { SiteHeader } from "@/components/site-header"
 import { ingestPdfs } from "@/lib/pdf/ingest"
@@ -19,12 +20,13 @@ export default async function PassagePage({
 
   return (
     <>
-      <SiteHeader title="阅读篇章" backHref="/" />
+      <SiteHeader title="阅读篇章" backHref="/n3" />
       <PassageReader
         passage={passage}
         prev={ready[index - 1]}
         next={ready[index + 1]}
       />
+      <BottomNav />
     </>
   )
 }

@@ -1,15 +1,21 @@
 # JLPT-READ
 
-N3 句型阅读练习。内容来自 [jp-grammar-n3](https://github.com/fangfang0930/jp-grammar-n3) 与《N3句型语法123条（极速版语条）》PDF。
+手机上也能用的日语阅读器：点日文就能朗读。
 
-## 能做什么
+## N2 语法朗读（首页）
 
-- 读 PDF 抽出的短篇（文字层 PDF 会自动入库）
-- 浏览全部 123 条 N3 语条，先看日文例句再揭开译文
-- 按顺序做例句练习，并朗读日文
-- 本地记下已读进度（浏览器 localStorage）
+按《TRY！新日语能力考试N2 语法必备》公开的 **14 课课次** 做成阅读页：
 
-原 PDF 是扫描件，没有文字层。123 条已按表格录入；带文字层的 PDF 放到 `content/pdfs/` 后刷新即可出现在「阅读篇章」。
+- 日文例文点一下朗读，再点一次停止
+- 可隐藏中文、调节字号
+- 底部切换「N2语法 / 长难句 / N3句型」
+- 可添加到手机主屏幕（PWA）
+
+仓库里没有 Windows 路径 `f:\何芳芳\japanese\N2-PLUS\TRY！新日语能力考试N2 语法必备.pdf`，所以没有整书扫描原文。句型和释义按该课次整理，例句为阅读练习重写。长难句来自已上传的 `content/pdfs/N2长难句补弱.pdf`。
+
+## N3
+
+`/n3` 仍是原来的 123 条 N3 语条练习。
 
 ## 本地运行
 
@@ -27,18 +33,14 @@ npm run build
 npm start
 ```
 
-## 放入自己的 PDF
+## 数据
 
-1. 把 `.pdf` 文件丢进 `content/pdfs/`（或把目录设到环境变量 `CONTENT_PDF_DIR`）。
-2. 需要**可选中复制的文字层**，并使用 UTF-8／标准日文字体。扫描件无法直接抽字。
-3. 重启或刷新开发服务器。首页「阅读篇章」会列出每一页正文。
+```bash
+npm run catalog
+```
 
-仓库里已有：
-
-- `content/pdfs/sample-n3-reading.pdf`：可抽取的日语短篇样例
-- `content/pdfs/n3-123-yutiao.pdf`：用户上传的 123 条原件（扫描版）
-- `content/generated/grammar-data.json` 与 `data.js`：完整 `GRAMMAR_DATA`（123 条）
+会生成 `content/generated/n3-123.json` 与 `n2-try.json`。
 
 ## 技术
 
-Next.js、TypeScript、Tailwind、shadcn/ui。PDF 文字层用 [unpdf](https://github.com/unjs/unpdf) / pdf.js。
+Next.js、TypeScript、Tailwind、浏览器 SpeechSynthesis（日语）。

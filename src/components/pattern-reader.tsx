@@ -26,7 +26,7 @@ export function PatternReader({
   const reviewed = progress.has(item.id)
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-4 px-4 py-5 pb-24">
+    <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-4 px-4 py-5 pb-28">
       <Card className="overflow-hidden py-0">
         <CardHeader className="bg-gradient-to-br from-primary to-[#ff6b6b] py-6 text-primary-foreground">
           <div className="flex items-start justify-between gap-3">

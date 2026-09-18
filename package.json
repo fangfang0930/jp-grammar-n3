@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start --port 4317",
     "lint": "eslint",
-    "catalog": "python3 scripts/build-n3-catalog.py"
+    "catalog": "python3 scripts/build-n3-catalog.py && python3 scripts/build-n2-try.py"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",

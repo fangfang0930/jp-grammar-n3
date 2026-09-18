@@ -1,7 +1,6 @@
-import { HomeExplorer } from "@/components/home-explorer"
+import { BottomNav } from "@/components/bottom-nav"
+import { N2Home } from "@/components/n2-home"
 import { SiteHeader } from "@/components/site-header"
-import { CATALOG_ITEMS } from "@/data/catalog"
-import { ingestPdfs } from "@/lib/pdf/ingest"
 
 export const dynamic = "force-dynamic"
 
@@ -13,19 +12,12 @@ export default async function HomePage({
   const params = await searchParams
   const raw = params.q
   const initialQuery = Array.isArray(raw) ? (raw[0] ?? "") : (raw ?? "")
-  const report = await ingestPdfs()
 
   return (
     <>
-      <SiteHeader title="N3 句型阅读" />
-      <HomeExplorer
-        catalog={CATALOG_ITEMS}
-        passages={report.passages}
-        pdfDir={report.pdfDir}
-        pdfFiles={report.files}
-        ingestErrors={report.errors}
-        initialQuery={initialQuery}
-      />
+      <SiteHeader title="N2 语法朗读" />
+      <N2Home initialQuery={initialQuery} />
+      <BottomNav />
     </>
   )
 }

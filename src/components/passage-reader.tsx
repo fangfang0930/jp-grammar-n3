@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { SpeakButton } from "@/components/speak-button"
+import { SpeakableText } from "@/components/speakable-text"
 import { buttonVariants } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import type { ReadingPassage } from "@/data/catalog"
@@ -19,7 +20,7 @@ export function PassageReader({
   const speech = useSpeech()
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-4 px-4 py-5 pb-24">
+    <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-4 px-4 py-5 pb-28">
       <Card className="overflow-hidden py-0">
         <CardHeader className="bg-gradient-to-br from-primary to-[#ff6b6b] py-6 text-primary-foreground">
           <p className="text-xs text-white/80">
@@ -34,7 +35,7 @@ export function PassageReader({
               {passage.note || "这份 PDF 还没有可练习的文字。"}
             </p>
           ) : (
-            <p className="whitespace-pre-wrap text-lg leading-9">{passage.body}</p>
+            <SpeakableText text={passage.body} speech={speech} />
           )}
         </CardContent>
         <CardFooter>
