@@ -12,6 +12,9 @@ export type N2Point = {
   meaning: string
   connection: string
   examples: N2Example[]
+  headline?: string
+  number?: number
+  stars?: number
 }
 
 export type N2Lesson = {
@@ -30,11 +33,24 @@ export type N2HardPassage = {
   cn: string
 }
 
+export type N2FlatPoint = {
+  id: string
+  number: number
+  pattern: string
+  headline: string
+  stars: number
+  howToUse: string
+  connection: string
+  category?: string
+  examples: N2Example[]
+}
+
 type TryFile = {
   title: string
   source: string
   note: string
   lessons: N2Lesson[]
+  points?: N2FlatPoint[]
 }
 
 type PassageFile = {
@@ -51,6 +67,18 @@ export const N2_BOOK_SOURCE = book.source
 export const N2_BOOK_NOTE = book.note
 export const N2_LESSONS: N2Lesson[] = book.lessons
 export const N2_POINTS: N2Point[] = N2_LESSONS.flatMap((lesson) => lesson.points)
+export const N2_FLAT_POINTS: N2FlatPoint[] =
+  book.points ??
+  N2_POINTS.map((point, index) => ({
+    id: point.id,
+    number: point.number ?? index + 1,
+    pattern: point.title,
+    headline: point.headline ?? point.title,
+    stars: point.stars ?? 2,
+    howToUse: point.meaning,
+    connection: point.connection,
+    examples: point.examples,
+  }))
 export const N2_HARD_PASSAGES: N2HardPassage[] = hard.items
 export const N2_HARD_TITLE = hard.title
 
@@ -100,10 +128,7 @@ export function searchN2(query: string): {
   if (!keyword) {
     return {
       lessons: N2_LESSONS,
-      points: N2_POINTS.map((point) => {
-        const found = getPoint(point.id)
-        return found!
-      }),
+      points: N2_POINTS.map((point) => getPoint(point.id)!),
       passages: N2_HARD_PASSAGES,
     }
   }
@@ -118,6 +143,8 @@ export function searchN2(query: string): {
       .filter((point) => {
         const hay = [
           point.title,
+          point.headline ?? "",
+          String(point.number ?? ""),
           point.meaning,
           point.connection,
           ...point.examples.flatMap((ex) => [ex.jp, ex.cn]),
@@ -134,4 +161,8 @@ export function searchN2(query: string): {
   )
 
   return { lessons, points, passages }
+}
+
+export function starsLabel(stars = 2) {
+  return "★".repeat(Math.max(1, Math.min(3, stars)))
 }

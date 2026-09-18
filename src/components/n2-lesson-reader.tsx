@@ -62,7 +62,11 @@ export function N2LessonReader({
             <CardHeader className="border-b py-4">
               <div className="flex items-start justify-between gap-2">
                 <Link href={`/n2/points/${point.id}`} className="min-w-0">
-                  <CardTitle className="text-xl text-primary">{point.title}</CardTitle>
+                  <CardTitle className="text-xl text-primary">
+                    {point.number != null ? `${point.number}. ` : ""}
+                    {point.headline || point.title}
+                  </CardTitle>
+                  <p className="mt-1 text-sm text-muted-foreground">{point.title}</p>
                 </Link>
                 {done ? <Badge variant="secondary">已读</Badge> : null}
               </div>

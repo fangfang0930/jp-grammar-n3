@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import type { N2Lesson, N2Point } from "@/data/n2"
+import { starsLabel } from "@/data/n2"
 import { fontClass, useReaderPrefs } from "@/hooks/use-reader-prefs"
 import { useProgress } from "@/hooks/use-progress"
 import { useSpeech } from "@/hooks/use-speech"
@@ -27,35 +28,43 @@ export function N2PointReader({
   const progress = useProgress()
   const reviewed = progress.has(point.id)
   const scale = fontClass(prefs.fontScale)
-  const allJp = [point.title, ...point.examples.map((item) => item.jp)].join("。")
+  const headline = point.headline || point.title
+  const number = point.number
+  const allJp = [headline, ...point.examples.map((item) => item.jp)].join("。")
 
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-4 px-4 py-5 pb-28">
       <Card className="overflow-hidden py-0">
-        <CardHeader className="bg-gradient-to-br from-primary to-[#ff6b6b] py-6 text-primary-foreground">
+        <CardHeader className="space-y-3 border-b py-5">
           <div className="flex items-start justify-between gap-3">
-            <div>
-              <p className="text-xs text-white/80">
-                第 {lesson.index} 课 · {lesson.title}
+            <div className="min-w-0">
+              <p className="text-xs text-muted-foreground">
+                {number != null ? `${number}` : ""} · 第 {lesson.index} 课 · {lesson.title}
               </p>
-              <CardTitle className="mt-1 text-2xl font-bold text-white">{point.title}</CardTitle>
+              <CardTitle className="mt-1 text-2xl font-bold tracking-wide text-primary">
+                {headline}
+              </CardTitle>
+              <p className="mt-1 text-sm text-muted-foreground">{point.title}</p>
             </div>
-            {reviewed ? <Badge variant="secondary">已读</Badge> : null}
+            <div className="flex shrink-0 flex-col items-end gap-2">
+              <span className="text-amber-500">{starsLabel(point.stars)}</span>
+              {reviewed ? <Badge variant="secondary">已读</Badge> : null}
+            </div>
           </div>
         </CardHeader>
         <CardContent className="space-y-4 py-5">
-          {!prefs.hideCn ? (
-            <>
-              <section>
-                <p className="mb-1 text-xs font-semibold text-primary">意思</p>
-                <p className="text-base leading-7">{point.meaning}</p>
-              </section>
-              <section>
-                <p className="mb-1 text-xs font-semibold text-primary">接续</p>
-                <p className="text-sm leading-6 text-muted-foreground">{point.connection}</p>
-              </section>
-            </>
-          ) : null}
+          <section className="rounded-xl bg-muted/60 p-4">
+            <p className="mb-2 text-xs font-semibold text-primary">どう使う？</p>
+            {!prefs.hideCn ? (
+              <p className="text-base leading-7">{point.meaning}</p>
+            ) : (
+              <p className="text-sm text-muted-foreground">中文说明已隐藏</p>
+            )}
+            <p className="mt-3 rounded-lg bg-card px-3 py-2 font-mono text-sm text-primary">
+              {point.connection}
+            </p>
+          </section>
+
           <ReaderToolbar
             speaking={speech.isSpeaking}
             onSpeak={() => speech.speakLang(allJp, "ja")}
@@ -65,11 +74,12 @@ export function N2PointReader({
             fontScale={prefs.fontScale}
             onCycleFont={prefs.cycleFont}
           />
+
           {point.examples.map((example, index) => (
-            <section key={index} className="rounded-xl bg-muted/60 p-4">
+            <section key={index} className="rounded-xl border border-border/70 p-4">
               <p className="mb-2 text-xs font-semibold text-primary">例文 {index + 1}</p>
               <SpeakableText text={example.jp} speech={speech} scaleClass={scale} />
-              {!prefs.hideCn ? (
+              {!prefs.hideCn && example.cn ? (
                 <p className="mt-3 text-sm leading-6 text-muted-foreground">{example.cn}</p>
               ) : null}
             </section>
