@@ -23,6 +23,21 @@
 # misc
 .DS_Store
 *.pem
+.tools/
+
+# large local PDFs (keep structured JSON in content/generated)
+content/pdfs/TRY*.pdf
+content/pdfs/n2-高频必考语法例句.pdf
+.tools/
+
+# large local PDFs (keep structured JSON in content/generated)
+content/pdfs/TRY*.pdf
+content/pdfs/n2-高频必考语法例句.pdf
+.tools/
+
+# large local PDFs (keep structured JSON in content/generated)
+content/pdfs/TRY*.pdf
+content/pdfs/n2-高频必考语法例句.pdf
 
 # debug
 npm-debug.log*

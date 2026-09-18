@@ -26,19 +26,19 @@ export function ReaderToolbar({
 }) {
   const fontLabel = fontScale === "md" ? "小" : fontScale === "xl" ? "大" : "中"
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="grid grid-cols-2 gap-2">
       <SpeakButton
         speaking={speaking}
         onSpeak={onSpeak}
         onStop={onStop}
         label={speakLabel}
-        className="min-h-11 flex-1"
+        className="col-span-2 min-h-11 w-full"
       />
-      <Button type="button" variant="outline" className="min-h-11 flex-1" onClick={onToggleCn}>
+      <Button type="button" variant="outline" className="min-h-11 w-full" onClick={onToggleCn}>
         {hideCn ? <Eye data-icon="inline-start" /> : <EyeOff data-icon="inline-start" />}
         {hideCn ? "显示中文" : "隐藏中文"}
       </Button>
-      <Button type="button" variant="outline" className="min-h-11 px-3" onClick={onCycleFont}>
+      <Button type="button" variant="outline" className="min-h-11 w-full" onClick={onCycleFont}>
         <Type data-icon="inline-start" />
         字号 {fontLabel}
       </Button>
