@@ -6,3 +6,4 @@
 - 扫描件没有文字层：应用会标成「扫描版」，不会当作篇章。
 - `sample-n3-reading.pdf` 是可抽取的日语短篇样例。
 - `n3-123-yutiao.pdf` 是《N3句型语法123条（极速版语条）》原件。
+- `N2长难句补弱.pdf` 是 N2 阅读长句扫描件；正文已整理进 `content/generated/n2-passages.json`。

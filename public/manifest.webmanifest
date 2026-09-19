@@ -1,0 +1,18 @@
+{
+  "name": "JLPT N2 语法朗读",
+  "short_name": "N2朗读",
+  "description": "点日文即可朗读的 N2 语法阅读器，适合手机。",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8f9fa",
+  "theme_color": "#e63946",
+  "lang": "zh-CN",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

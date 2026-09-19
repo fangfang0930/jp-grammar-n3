@@ -37,7 +37,7 @@ export function ExamplePractice({ items }: { items: CatalogItem[] }) {
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-4 px-4 py-5 pb-24">
+    <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-4 px-4 py-5 pb-28">
       <div className="space-y-2">
         <div className="flex justify-between text-sm">
           <span>例句练习</span>
