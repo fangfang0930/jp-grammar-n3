@@ -23,8 +23,8 @@ export function SpeakButton({
     <Button
       type="button"
       variant={speaking ? "secondary" : "outline"}
-      size="sm"
-      className={cn("gap-1.5", className)}
+      size="lg"
+      className={cn("min-h-11 gap-1.5", className)}
       onClick={speaking ? onStop : onSpeak}
     >
       {speaking ? <Square data-icon="inline-start" /> : <Volume2 data-icon="inline-start" />}

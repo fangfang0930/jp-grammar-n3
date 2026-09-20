@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { BottomNav } from "@/components/bottom-nav"
 import { SiteHeader } from "@/components/site-header"
 import { buttonVariants } from "@/components/ui/button"
 
@@ -13,6 +14,7 @@ export default function NotFound() {
           返回目录
         </Link>
       </div>
+      <BottomNav />
     </>
   )
 }

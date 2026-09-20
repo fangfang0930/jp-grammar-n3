@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation"
+import { BottomNav } from "@/components/bottom-nav"
 import { PatternReader } from "@/components/pattern-reader"
 import { SiteHeader } from "@/components/site-header"
 import { CATALOG_ITEMS, getAdjacentCatalog, getCatalogItem } from "@/data/catalog"
@@ -31,8 +32,9 @@ export default async function ReadPage({
 
   return (
     <>
-      <SiteHeader title="语法详情" backHref="/" />
+      <SiteHeader title="语法详情" backHref="/n3" />
       <PatternReader item={item} prev={prev} next={next} />
+      <BottomNav />
     </>
   )
 }

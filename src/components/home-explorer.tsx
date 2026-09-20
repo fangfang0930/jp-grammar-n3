@@ -58,10 +58,10 @@ export function HomeExplorer({
     query.trim().length > 0 && filteredCatalog.length === 0 && filteredPassages.length === 0
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 py-5 pb-24">
+    <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 py-5 pb-28">
       <section className="space-y-3">
         <p className="text-sm leading-6 text-muted-foreground">
-          用 N3 句型 PDF 做阅读练习：先读短篇，再对照 123 条语条。译文默认收起。
+          N3 句型阅读练习：先读短篇，再对照 123 条语条。译文默认收起。底部可切回 N2。
         </p>
         <div className="space-y-2">
           <div className="flex items-center justify-between text-sm">
@@ -87,7 +87,7 @@ export function HomeExplorer({
         </div>
       </section>
 
-      <form action="/" method="get" className="space-y-2" role="search">
+      <form action="/n3" method="get" className="space-y-2" role="search">
         <div className="flex gap-2">
           <input
             type="search"

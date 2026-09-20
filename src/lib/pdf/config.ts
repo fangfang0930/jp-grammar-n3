@@ -10,7 +10,7 @@ export function resolvePdfDir(cwd = process.cwd()): string {
 }
 
 export function pdfDirExists(cwd = process.cwd()): boolean {
-  return existsSync(resolvePdfDir(cwd))
+  return existsSync(/* turbopackIgnore: true */ resolvePdfDir(cwd))
 }
 
 export const WATERMARK_HINTS = [
